@@ -83,7 +83,7 @@ void IRAM_ATTR Pulse2MeterSensor::gpio_intr(Pulse2MeterSensor *sensor) {
   if( pa && sensor->flipflop ) return; 
 
   // First time
-  this-> sensor = true;
+  sensor->flipflop = true;
 
   // Check to see if we should filter this edge out
   if ((now - sensor->last_detected_edge_us_) >= sensor->filter_us_) {
