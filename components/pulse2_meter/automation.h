@@ -5,7 +5,6 @@
 #include "esphome/components/pulse2_meter/pulse2_meter_sensor.h"
 
 namespace esphome {
-
 namespace pulse2_meter {
 
 template<typename... Ts> class SetTotalPulsesAction : public Action<Ts...> {
