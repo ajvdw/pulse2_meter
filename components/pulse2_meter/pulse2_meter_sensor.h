@@ -10,7 +10,8 @@ namespace pulse2_meter {
 
 class Pulse2MeterSensor : public sensor::Sensor, public Component {
  public:
-  void set_pin(InternalGPIOPin *pin) { this->pin_ = pin; }
+  void set_pin_a(InternalGPIOPin *pin_a) { this->pin_a_ = pin_a; }
+  void set_pin_b(InternalGPIOPin *pin_b) { this->pin_b_ = pin_b; }
   void set_filter_us(uint32_t filter) { this->filter_us_ = filter; }
   void set_timeout_us(uint32_t timeout) { this->timeout_us_ = timeout; }
   void set_total_sensor(sensor::Sensor *sensor) { this->total_sensor_ = sensor; }
@@ -25,8 +26,11 @@ class Pulse2MeterSensor : public sensor::Sensor, public Component {
  protected:
   static void gpio_intr(Pulse2MeterSensor *sensor);
 
-  InternalGPIOPin *pin_ = nullptr;
-  ISRInternalGPIOPin isr_pin_;
+  InternalGPIOPin *pin_a_ = nullptr;  
+  InternalGPIOPin *pin_b_ = nullptr;
+  ISRInternalGPIOPin isr_pin_a_;
+  ISRInternalGPIOPin isr_pin_b_;
+
   uint32_t filter_us_ = 0;
   uint32_t timeout_us_ = 1000000UL * 60UL * 5UL;
   sensor::Sensor *total_sensor_ = nullptr;

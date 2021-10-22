@@ -5,7 +5,8 @@ from esphome.components import sensor
 from esphome.const import (
     CONF_ID,
     CONF_INTERNAL_FILTER,
-    CONF_PIN,
+    CONF_PIN_A,
+    CONF_PIN_B,
     CONF_NUMBER,
     CONF_TIMEOUT,
     CONF_TOTAL,
@@ -57,7 +58,8 @@ CONFIG_SCHEMA = sensor.sensor_schema(
 ).extend(
     {
         cv.GenerateID(): cv.declare_id(Pulse2MeterSensor),
-        cv.Required(CONF_PIN): validate_pulse2_meter_pin,
+        cv.Required(CONF_PIN_A): validate_pulse2_meter_pin,
+        cv.Required(CONF_PIN_B): validate_pulse2_meter_pin,
         cv.Optional(CONF_INTERNAL_FILTER, default="13us"): validate_internal_filter,
         cv.Optional(CONF_TIMEOUT, default="5min"): validate_timeout,
         cv.Optional(CONF_TOTAL): sensor.sensor_schema(
@@ -75,7 +77,9 @@ async def to_code(config):
     await cg.register_component(var, config)
     await sensor.register_sensor(var, config)
 
-    pin = await cg.gpio_pin_expression(config[CONF_PIN])
+    pin_a = await cg.gpio_pin_expression(config[CONF_PIN_A])
+    cg.add(var.set_pin(pin))
+    pin_b = await cg.gpio_pin_expression(config[CONF_PIN_B])
     cg.add(var.set_pin(pin))
     cg.add(var.set_filter_us(config[CONF_INTERNAL_FILTER]))
     cg.add(var.set_timeout_us(config[CONF_TIMEOUT]))
