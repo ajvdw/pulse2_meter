@@ -67,10 +67,23 @@ void IRAM_ATTR Pulse2MeterSensor::gpio_intr(Pulse2MeterSensor *sensor) {
   // Get the current time before we do anything else so the measurements are consistent
   const uint32_t now = micros();
 
-  // We only look at rising edges
-  if (!sensor->isr_pin_a_.digital_read()) {
+
+  const uint8_t pa=sensor->isr_pin_a_.digital_read(); 
+  const uint8_t pb=sensor->isr_pin_b_.digital_read();
+ 
+  // We only look at both 1 or both 0
+  if (pa != pb) return;
+  
+  if( !pb )
+  { 
+    this->flipflop = false; 
     return;
   }
+  
+  if( pa && this->flipflop ) return; 
+
+  // First time
+  this->flipflop = true;
 
   // Check to see if we should filter this edge out
   if ((now - sensor->last_detected_edge_us_) >= sensor->filter_us_) {

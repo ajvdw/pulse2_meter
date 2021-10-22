@@ -31,6 +31,7 @@ class Pulse2MeterSensor : public sensor::Sensor, public Component {
   ISRInternalGPIOPin isr_pin_a_;
   ISRInternalGPIOPin isr_pin_b_;
 
+  bool flipflop = false;
   uint32_t filter_us_ = 0;
   uint32_t timeout_us_ = 1000000UL * 60UL * 5UL;
   sensor::Sensor *total_sensor_ = nullptr;
