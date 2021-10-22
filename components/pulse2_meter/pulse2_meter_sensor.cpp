@@ -7,9 +7,13 @@ namespace pulse2_meter {
 static const char *const TAG = "pulse2_meter";
 
 void Pulse2MeterSensor::setup() {
-  this->pin_->setup();
-  this->isr_pin_ = pin_->to_isr();
-  this->pin_->attach_interrupt(Pulse2MeterSensor::gpio_intr, this, gpio::INTERRUPT_ANY_EDGE);
+  this->pin_a_->setup();
+  this->isr_pin_a_ = pin_a_->to_isr();
+  this->pin_a_->attach_interrupt(Pulse2MeterSensor::gpio_intr, this, gpio::INTERRUPT_ANY_EDGE);
+
+  this->pin_b_->setup();
+  this->isr_pin_b_ = pin_b_->to_isr();
+  this->pin_b_->attach_interrupt(Pulse2MeterSensor::gpio_intr, this, gpio::INTERRUPT_ANY_EDGE);
 
   this->last_detected_edge_us_ = 0;
   this->last_valid_edge_us_ = 0;
@@ -50,8 +54,9 @@ void Pulse2MeterSensor::loop() {
 void Pulse2MeterSensor::set_total_pulses(uint32_t pulses) { this->total_pulses_ = pulses; }
 
 void Pulse2MeterSensor::dump_config() {
-  LOG_SENSOR("", "Pulse Meter", this);
-  LOG_PIN("  Pin: ", this->pin_);
+  LOG_SENSOR("", "Pulse2 Meter", this);
+  LOG_PIN("  Pin A: ", this->pin_a_);
+  LOG_PIN("  Pin B: ", this->pin_b_);
   ESP_LOGCONFIG(TAG, "  Filtering pulses shorter than %u µs", this->filter_us_);
   ESP_LOGCONFIG(TAG, "  Assuming 0 pulses/min after not receiving a pulse for %us", this->timeout_us_ / 1000000);
 }
@@ -62,10 +67,23 @@ void IRAM_ATTR Pulse2MeterSensor::gpio_intr(Pulse2MeterSensor *sensor) {
   // Get the current time before we do anything else so the measurements are consistent
   const uint32_t now = micros();
 
-  // We only look at rising edges
-  if (!sensor->isr_pin_.digital_read()) {
+
+  const uint8_t pa=sensor->isr_pin_a_.digital_read(); 
+  const uint8_t pb=sensor->isr_pin_b_.digital_read();
+ 
+  // We only look at both 1 or both 0
+  if (pa != pb) return;
+  
+  if( !pb )
+  { 
+    sensor->flipflop = false; 
     return;
   }
+  
+  if( pa && sensor->flipflop ) return; 
+
+  // First time
+  sensor->flipflop = true;
 
   // Check to see if we should filter this edge out
   if ((now - sensor->last_detected_edge_us_) >= sensor->filter_us_) {
