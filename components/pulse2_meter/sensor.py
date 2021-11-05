@@ -99,7 +99,7 @@ async def to_code(config):
         }
     ),
 )
-async def set_total_action_to_code(config, action_id, template_arg, args):
+async def pulse2_meter_set_total_pulses(config, action_id, template_arg, args):
     paren = await cg.get_variable(config[CONF_ID])
     var = cg.new_Pvariable(action_id, template_arg, paren)
     template_ = await cg.templatable(config[CONF_VALUE], args, int)
