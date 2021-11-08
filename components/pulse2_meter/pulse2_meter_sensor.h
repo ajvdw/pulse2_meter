@@ -15,6 +15,7 @@ class Pulse2MeterSensor : public sensor::Sensor, public Component {
   void set_filter_us(uint32_t filter) { this->filter_us_ = filter; }
   void set_timeout_us(uint32_t timeout) { this->timeout_us_ = timeout; }
   void set_total_sensor(sensor::Sensor *sensor) { this->total_sensor_ = sensor; }
+  void set_calibration_sensor(sensor::Sensor *sensor) { this->calibration_sensor_ = sensor; }
 
   void set_total_pulses(uint32_t pulses);
 
@@ -35,12 +36,15 @@ class Pulse2MeterSensor : public sensor::Sensor, public Component {
   uint32_t filter_us_ = 0;
   uint32_t timeout_us_ = 1000000UL * 60UL * 5UL;
   sensor::Sensor *total_sensor_ = nullptr;
+  sensor::Sensor *calibration_sensor_ = nullptr;
 
   Deduplicator<uint32_t> pulse_width_dedupe_;
   Deduplicator<uint32_t> total_dedupe_;
+  Deduplicator<uint32_t> calibration_dedupe_;
 
   volatile uint32_t last_detected_edge_us_ = 0;
   volatile uint32_t last_valid_edge_us_ = 0;
+  Volatile uint32_t last_calibration_ = 0;
   volatile uint32_t pulse_width_us_ = 0;
   volatile uint32_t total_pulses_ = 0;
 };
