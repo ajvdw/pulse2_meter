@@ -49,6 +49,7 @@ void Pulse2MeterSensor::loop() {
     if (this->total_dedupe_.next(total)) {
       this->total_sensor_->publish_state(total);
     }
+  }
 
   if (this->calibration_sensor_ != nullptr) {
     const uint32_t calibration = this->calibration_;
