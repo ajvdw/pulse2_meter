@@ -80,7 +80,7 @@ void IRAM_ATTR Pulse2MeterSensor::gpio_intr(Pulse2MeterSensor *sensor) {
   const uint8_t pa=sensor->isr_pin_a_.digital_read(); 
   const uint8_t pb=sensor->isr_pin_b_.digital_read();
  
-  this->calibration_ = pa + pb;
+  sensor->calibration_ = pa + pb;
 
   // We only look at both 1 or both 0
   if (pa != pb) return;
