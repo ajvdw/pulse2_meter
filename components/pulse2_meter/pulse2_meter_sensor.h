@@ -44,10 +44,13 @@ class Pulse2MeterSensor : public sensor::Sensor, public Component {
 
   volatile uint32_t last_detected_edge_us_ = 0;
   volatile uint32_t last_valid_edge_us_ = 0;
-  Volatile uint32_t last_calibration_ = 0;
+  volatile uint32_t last_calibration_ = 0;
   volatile uint32_t pulse_width_us_ = 0;
   volatile uint32_t total_pulses_ = 0;
+  volatile uint32_t calibration_ = 0;
+
 };
+
 
 }  // namespace pulse2_meter
 }  // namespace esphome
