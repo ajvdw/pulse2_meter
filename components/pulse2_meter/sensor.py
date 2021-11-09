@@ -10,6 +10,7 @@ from esphome.const import (
     CONF_NUMBER,
     CONF_TIMEOUT,
     CONF_TOTAL,
+    CONF_CALIBRATION,
     CONF_VALUE,
     ICON_PULSE,
     STATE_CLASS_MEASUREMENT,
@@ -68,6 +69,13 @@ CONFIG_SCHEMA = sensor.sensor_schema(
             accuracy_decimals=0,
             state_class=STATE_CLASS_TOTAL_INCREASING,
         ),
+        cv.Optional(CONF_CALIBRATION): sensor.sensor_schema(
+            unit_of_measurement='',
+            icon=ICON_PULSE,
+            accuracy_decimals=0,
+            state_class=STATE_CLASS_MEASUREMENT,
+        ),
+
     }
 )
 
@@ -84,9 +92,13 @@ async def to_code(config):
     cg.add(var.set_filter_us(config[CONF_INTERNAL_FILTER]))
     cg.add(var.set_timeout_us(config[CONF_TIMEOUT]))
 
+    
     if CONF_TOTAL in config:
         sens = await sensor.new_sensor(config[CONF_TOTAL])
         cg.add(var.set_total_sensor(sens))
+    if CONF_CALIBRATION in config:
+        sens = await sensor.new_sensor(config[CONF_CALIBRATION])
+        cg.add(var.set_calibration_sensor(sens))
 
 
 @automation.register_action(
