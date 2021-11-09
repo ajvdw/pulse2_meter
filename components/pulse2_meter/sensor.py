@@ -70,7 +70,7 @@ CONFIG_SCHEMA = sensor.sensor_schema(
             state_class=STATE_CLASS_TOTAL_INCREASING,
         ),
         cv.Optional(CONF_CALIBRATION): sensor.sensor_schema(
-            unit_of_measurement=UNIT_NONE,
+            unit_of_measurement='',
             icon=ICON_PULSE,
             accuracy_decimals=0,
             state_class=STATE_CLASS_MEASUREMENT,
